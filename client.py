@@ -8,7 +8,7 @@ import socket
 import sys
 
 if len(sys.argv) < 6:
-	sys.exit('Usage: client.py ip puerto register sip_addres expires_value')
+	sys.exit('Usage: client.py ip port register sip_addres expires_value')
 
 # Constantes. Dirección IP del servidor y contenido a enviar
 SERVER = sys.argv[1]
