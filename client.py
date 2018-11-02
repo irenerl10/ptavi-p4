@@ -24,8 +24,8 @@ with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as my_socket:
     REGISTER_MAYUSC = LINE.split()[0].upper()
     EXP = 'Expires: ' + EXPIRES + '\r\n'
     if LINE.split()[0] == 'register':
-        LINE = REGISTER_MAYUSC + ' ' + DIR + ' SIP/2.0\r\n'
-    my_socket.send(bytes('sip: ' + LINE + EXP, 'utf-8'))
+        LINE = DIR + ' SIP/2.0\r\n'
+    my_socket.send(bytes(REGISTER_MAYUSC + ' sip:' + LINE + EXP, 'utf-8'))
     data = my_socket.recv(1024)
     print('Recibido -- ', data.decode('utf-8'))
 
