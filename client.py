@@ -8,7 +8,7 @@ import socket
 import sys
 
 if len(sys.argv) < 6:
-	sys.exit('Usage: client.py ip port register sip_addres expires_value')
+    sys.exit('Usage: client.py ip port register sip_addres expires_value')
 
 # Constantes. Dirección IP del servidor y contenido a enviar
 SERVER = sys.argv[1]
@@ -25,7 +25,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as my_socket:
     EXP = 'Expires: ' + EXPIRES + '\r\n'
     if LINE.split()[0] == 'register':
         LINE = REGISTER_MAYUSC + ' ' + DIR + ' SIP/2.0\r\n'
-    my_socket.send(bytes('sip: ' + LINE + EXP, 'utf-8')) 
+    my_socket.send(bytes('sip: ' + LINE + EXP, 'utf-8'))
     data = my_socket.recv(1024)
     print('Recibido -- ', data.decode('utf-8'))
 
