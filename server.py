@@ -53,9 +53,11 @@ class EchoHandler(socketserver.DatagramRequestHandler):
             IP_CLIENT = self.client_address[0]
             PORT_CLIENT = self.client_address[1]
             print("El cliente nos manda ", line.decode('utf-8'))
-            if LINE[1] == 'REGISTER':
-                USER = LINE[2]
-                self.wfile.write(b'SIP 2.0 OK\r\n\r\n')
+            print(LINE)
+            if LINE[0] == 'REGISTER':
+                USER = LINE[1].split(':')[1]
+                print(USER)
+                self.wfile.write(b'SIP/2.0 200 OK\r\n\r\n')
             if LINE[0] == 'Expires:':
                 TIMEXP = line.decode('utf-8').split()[1]
                 if TIMEXP != '0':
@@ -63,15 +65,14 @@ class EchoHandler(socketserver.DatagramRequestHandler):
                     TIME = time.gmtime(time.time())
                     TIME_STR = time.strftime(time.strftime(FORMATO, TIME))
                     EXPTIME = datetime.now() + timedelta(seconds=int(TIMEXP))
-
                     self.users[USER] = {
                               'address': IP_CLIENT,
                               'expires': EXPTIME.strftime('%H:%M:%S %d-%m-%Y')}
                 elif TIMEXP == '0':
                     try:
                         del self.users[USER]
-                        self.wfile.write(b'SIP 2.0 OK\r\n\r\n')
-                    except(NameError, FileNotFoundError, AttributeError):
+                        self.wfile.write(b'SIP/2.0 200 OK\r\n\r\n')
+                    except(KeyError, NameError, AttributeError):
                         print('Unregistered user')
         self.time_expired()
         self.register2json()
