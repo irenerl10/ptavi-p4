@@ -1,8 +1,6 @@
 #!/usr/bin/python3.
 # -*- coding: utf-8 -*-
-"""
-Clase (y programa principal) para un servidor de eco en UDP simple
-"""
+"""Clase (y programa principal) para un servidor de eco en UDP simple."""
 
 import socketserver
 import sys
@@ -17,9 +15,7 @@ PORT = int(sys.argv[1])
 
 
 class EchoHandler(socketserver.DatagramRequestHandler):
-    """
-    Echo server class
-    """
+    """Echo server class."""
     users = {}
 
     def register2json(self):
@@ -43,21 +39,17 @@ class EchoHandler(socketserver.DatagramRequestHandler):
             del self.users[USER]
 
     def handle(self):
-        """
-        handle method of the server class
-        (all requests will be handled by this method)
-        """
+        """handle method of the server class
+        (all requests will be handled by this method)."""
         self.json2registered()
         for line in self.rfile:
             LINE = line.decode('utf-8').split()
             IP_CLIENT = self.client_address[0]
             PORT_CLIENT = self.client_address[1]
             print("El cliente nos manda ", line.decode('utf-8'))
-            print(LINE)
             if LINE[0] == 'REGISTER':
                 USER = LINE[1].split(':')[1]
-                print(USER)
-                self.wfile.write(b'SIP/2.0 200 OK\r\n\r\n')
+
             if LINE[0] == 'Expires:':
                 TIMEXP = line.decode('utf-8').split()[1]
                 if TIMEXP != '0':
@@ -68,12 +60,13 @@ class EchoHandler(socketserver.DatagramRequestHandler):
                     self.users[USER] = {
                               'address': IP_CLIENT,
                               'expires': EXPTIME.strftime('%H:%M:%S %d-%m-%Y')}
+                    self.wfile.write(b'SIP/2.0 200 OK\r\n\r\n')
                 elif TIMEXP == '0':
                     try:
                         del self.users[USER]
                         self.wfile.write(b'SIP/2.0 200 OK\r\n\r\n')
                     except(KeyError, NameError, AttributeError):
-                        print('Unregistered user')
+                        self.wfile.write(b'SIP/2.0 404 User Not Found\r\n\r\n')
         self.time_expired()
         self.register2json()
 
